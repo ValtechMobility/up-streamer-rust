@@ -11,8 +11,8 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-use async_std::sync::Arc;
 use log::*;
+use std::sync::Arc;
 use up_rust::UTransport;
 
 const ENDPOINT_TAG: &str = "Endpoint:";
@@ -26,13 +26,13 @@ const ENDPOINT_FN_NEW_TAG: &str = "new():";
 ///
 /// ```
 /// use std::sync::Arc;
-/// use async_std::sync::Mutex;
+/// use tokio::sync::Mutex;
 /// use up_rust::UTransport;
 /// use up_streamer::Endpoint;
 ///
 /// # pub mod up_client_foo {
 /// #     use std::sync::Arc;
-/// #     use up_rust::{UMessage, UTransport, UStatus, UUIDBuilder, UUri, UListener};
+/// #     use up_rust::{UMessage, UTransport, UStatus, UUri, UListener};
 /// #     use async_trait::async_trait;
 /// #     pub struct UPClientFoo;
 /// #

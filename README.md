@@ -1,94 +1,67 @@
-# up-streamer-rust
+# up-streamer-rust: what is in this repository
+
+## up-streamer
 
 Generic, pluggable uStreamer that should be usable in most places we need
-to bridge from one transport to another.
+to write a uStreamer application to bridge from one transport to another.
 
-## Overview
+Reference its README.md for further details.
 
-Implementation of the uProtocol's uStreamer specification in Rust.
+## example-streamer-implementations
 
-### Visual Breakdown
+Two concrete implementations of a uStreamer as a binary. These can be used out of the box either to try running different UStreamer setups or to directly use them in a project!
 
-```mermaid
-sequenceDiagram 
-    participant main thread
-    participant TransportForwarder - Foo
-    participant TransportForwarder - Bar
-    participant UPClientFoo owned thread / task
-    participant UPClientBar owned thread / task
+Reference the README.md there for more details.
 
-    main thread->>main thread: let utransport_foo: Arc<dyn UTransport> = Arc::new(UPClientFoo::new())
-    main thread->>main thread: let local_authority = ...
-    main thread->>main thread: let local_endpoint = Endpoint::new(local_authority.clone(), utransport_foo.clone())
+## example-streamer-uses
 
-    main thread->>main thread: let utransport_bar: Arc<dyn UTransport> = Arc::new(UPClientBar::new())
-    main thread->>main thread: let remote_authority = ...
-    main thread->>main thread: let remote_endpoint = Endpoint::new(remote_authority.clone(), utransport_bar.clone())
-  
-    main thread->>main thread: let ustreamer = UStreamer::new()
+A number of UEntity examples for SOME/IP, Zenoh and MQTT5. These can be used together with the example streamer implementations to run basic setups of either a publisher and a subscriber, or a service and a client.
 
-    main thread->>main thread: ustreamer.add_forwarding_rule(local_endpoint, remote_endpoint)
-    main thread->>TransportForwarder - Foo: launch TransportForwarder - Foo
-    activate TransportForwarder - Foo
-    main thread->>UPClientFoo owned thread / task: (within ustreamer.add_forwarding_rule()) <br> local_endpoint.transport.lock().await.register_listener <br> (uauthority_to_uuri(remote_endpoint.authority), forwarding_listener).await
-    activate UPClientFoo owned thread / task
+Reference the README.md there for more details.
 
-    main thread->>main thread: ustreamer.add_forwarding_rule(remote_endpoint, local_endpoint)
-    main thread->>TransportForwarder - Bar: launch TransportForwarder - Bar
-    activate TransportForwarder - Bar
-    main thread->>UPClientBar owned thread / task: (within ustreamer.add_forwarding_rule()) <br> remote_endpoint.transport.lock().await.register_listener <br> (uauthority_to_uuri(local_endpoint.authority), forwarding_listener).await
-    activate UPClientBar owned thread / task
+## Building
 
-    loop Park the main thread, let background tasks run until closing UStreamer app
+### Only `up-streamer`
 
-        par UPClientFoo thread / task calls ForwardingListener.on_receive()
+If you only want to compile the library itself, you can as normal:
 
-            UPClientFoo owned thread / task->>UPClientFoo owned thread / task: forwarding_listener.on_receive(UMessage)
-            UPClientFoo owned thread / task-->>TransportForwarder - Foo: Send UMesssage over channel
-            TransportForwarder - Foo->>TransportForwarder - Foo: out_transport.send(UMessage) <br> (out_transport => utransport_bar in this case)
-
-        end
-
-        par UPClientBar thread / task calls ForwardingListener.on_receive()
-
-            UPClientBar owned thread / task->>UPClientBar owned thread / task: forwarding_listener.on_receive(UMessage)
-            UPClientBar owned thread / task-->>TransportForwarder - Bar: Send UMesssage over channel
-            TransportForwarder - Bar->>TransportForwarder - Bar: out_transport.send(UMessage) <br> (out_transport => utransport_foo in this case)
-
-        end
-
-        deactivate UPClientFoo owned thread / task
-        deactivate UPClientBar owned thread / task
-        deactivate TransportForwarder - Foo
-        deactivate TransportForwarder - Bar
-
-    end
+```
+cargo build
 ```
 
-### Generating cargo docs locally
+### Also build the reference Zenoh, vsomeip streamer implementations
 
-Documentation can be generated locally with:
+You'll need to use the feature flags `vsomeip-transport`, `zenoh-transport` or `mqtt-transport` depending on which implementation you want to build. You then also have the option of including your own vsomeip or using one bundled in `up-transport-vsomeip`.
+
+For the bundled option, you have two options to set environment variables needed.
+
+#### Using `config.toml`
+
+Set the following environment variables (for example in your .cargo/config.toml file):
+
+```toml
+[env]
+GENERIC_CPP_STDLIB_PATH=<path to your c++ stdlib (for example /usr/include/c++/13)>
+ARCH_SPECIFIC_CPP_STDLIB_PATH=<path to your c++ stdlib (for example /usr/include/x86_64-linux-gnu/c++/13)>
+```
 
 ```bash
-cargo doc --package up-streamer --open
+cargo build --features vsomeip-transport,bundled-vsomeip,zenoh-transport
 ```
 
-which will open your browser to view the docs.
+#### Using `build/envsetup.sh`
 
-## Getting Started
+Alternatively, you may run:
 
-### Working with the library
+```shell
+build/envsetup.sh
+```
 
-`up-streamer-rust` is generic and pluggable and can serve your needs so long as
-* Each transport you want to bridge over has a `up-client-foo-rust` library
-   and UPClientFoo struct which has `impl`ed `UTransport`
+to set the environment variables.
 
-### Usage
+The environment variables are necessary because of a workaround done in `up-transport-vsomeip` due to not being able to figure out another way to compile vsomeip without them. (If you can figure out how to avoid this, I'm all ears!)
 
-After following along with the [cargo docs](#generating-cargo-docs-locally) generated to add all your forwarding rules, you'll then need to keep the instantiated `UStreamer` around and then pause the main thread, so it will not exit, while the routing happens in the background threads spun up.
+Please reference the documentation for [vsomeip-sys](https://github.com/eclipse-uprotocol/up-transport-vsomeip-rust/tree/main/vsomeip-sys) for more details on:
+* the build requirements for vsomeip in the linked documentation in the COVESA repo
+* the environment variables which must be set
 
-## Implementation Status
-
-- [x] Routing of Request, Response, and Notification Messages
-- [ ] Routing of Publish messages (requires further development of uSubscription interface)
-- [x] Mechanism to retrieve messages received on and sent over transports

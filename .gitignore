@@ -15,3 +15,8 @@ lcov.info
 tarpaulin-report.html
 
 .idea/
+.vscode/launch.json
+.vscode/settings.json
+reports/
+
+.cargo/

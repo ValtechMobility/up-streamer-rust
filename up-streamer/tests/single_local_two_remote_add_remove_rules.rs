@@ -12,8 +12,6 @@
  ********************************************************************************/
 
 use async_broadcast::broadcast;
-use async_std::sync::{Condvar, Mutex};
-use async_std::task;
 use futures::future::join;
 use integration_test_utils::{
     check_messages_in_order, check_send_receive_message_discrepancy, local_authority,
@@ -30,14 +28,19 @@ use log::debug;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
+use tokio::sync::Mutex;
+use tokio_condvar::Condvar;
 use up_rust::{UListener, UTransport};
 use up_streamer::{Endpoint, UStreamer};
+use usubscription_static_file::USubscriptionStaticFile;
 
 const DURATION_TO_RUN_CLIENTS: u128 = 500;
 const SENT_MESSAGE_VEC_CAPACITY: usize = 20_000;
 
-#[async_std::test]
+#[tokio::test(flavor = "multi_thread")]
 async fn single_local_two_remote_add_remove_rules() {
+    integration_test_utils::init_logging();
+
     // using async_broadcast to simulate communication protocol
     let (tx_1, rx_1) = broadcast(20000);
     let (tx_2, rx_2) = broadcast(20000);
@@ -51,7 +54,13 @@ async fn single_local_two_remote_add_remove_rules() {
         Arc::new(UPClientFoo::new("upclient_bar_2", rx_3.clone(), tx_3.clone()).await);
 
     // setting up streamer to bridge between "foo" and "bar"
-    let mut ustreamer = UStreamer::new("foo_bar_streamer", 3000);
+    let subscription_path =
+        "../utils/usubscription-static-file/static-configs/testdata.json".to_string();
+    let usubscription = Arc::new(USubscriptionStaticFile::new(subscription_path));
+    let mut ustreamer = match UStreamer::new("foo_bar_streamer", 3000, usubscription) {
+        Ok(streamer) => streamer,
+        Err(error) => panic!("Failed to create uStreamer: {}", error),
+    };
 
     // setting up endpoints between authorities and protocols
     let local_endpoint = Endpoint::new("local_endpoint", &local_authority(), utransport_foo);
@@ -199,7 +208,7 @@ async fn single_local_two_remote_add_remove_rules() {
 
     debug!("signalled to resume");
 
-    task::sleep(Duration::from_millis(DURATION_TO_RUN_CLIENTS as u64)).await;
+    tokio::time::sleep(Duration::from_millis(DURATION_TO_RUN_CLIENTS as u64)).await;
 
     {
         let mut local_command = local_command.lock().await;
@@ -282,7 +291,7 @@ async fn single_local_two_remote_add_remove_rules() {
 
     debug!("signalled local, remote_a, remote_b to resume");
 
-    task::sleep(Duration::from_millis(DURATION_TO_RUN_CLIENTS as u64)).await;
+    tokio::time::sleep(Duration::from_millis(DURATION_TO_RUN_CLIENTS as u64)).await;
 
     debug!("after running local, remote_a, remote_b");
 
@@ -338,7 +347,7 @@ async fn single_local_two_remote_add_remove_rules() {
 
     debug!("signalled all to resume: local & remote_b");
 
-    task::sleep(Duration::from_millis(DURATION_TO_RUN_CLIENTS as u64)).await;
+    tokio::time::sleep(Duration::from_millis(DURATION_TO_RUN_CLIENTS as u64)).await;
 
     {
         let mut local_command = local_command.lock().await;

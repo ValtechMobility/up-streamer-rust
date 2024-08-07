@@ -12,12 +12,20 @@
 [workspace]
 resolver = "2"
 members = [
+    "example-streamer-uses",
+    "utils/hello-world-protos",
+    "utils/integration-test-utils",
+    "example-streamer-implementations",
+    "configurable-streamer",
+    "up-linux-streamer-plugin",
     "up-streamer",
+    "subscription-cache",
+    "utils/usubscription-static-file",
 ]
 
 [workspace.package]
-rust-version = "1.76.0"
-version = "0.1.5-dev" # uProtocol version
+rust-version = "1.82.0"
+version = "0.1.0"
 repository = "https://github.com/eclipse-uprotocol/up-streamer-rust"
 homepage = "https://github.com/eclipse-uprotocol"
 edition = "2021"
@@ -27,15 +35,37 @@ license = "Apache-2.0"
 [workspace.dependencies]
 async-std = { version = "1.12.0", features = ["attributes"] }
 async-trait = { version = "0.1" }
+clap = { version = "4.5" }
 env_logger = { version = "0.10.1" }
 futures = { version = "0.3.30" }
+lazy_static = { version = "1.5.0" }
 log = { version = "0.4.20" }
-prost = { version = "0.12" }
-prost-types = { version = "0.12" }
-serde_json = { version = "1.0.111" }
+json5 = { version = "0.4.1" }
+serde = { version = "1.0.154", features = ["derive"] }
+serde_json = { version = "1.0.94" }
 uuid = { version = "1.7.0" }
-up-rust = { default-features = false, git = "https://github.com/eclipse-uprotocol/up-rust", rev = "f5248a89cf1db6232f463ee3ce7b1cb20d79cfdb" }
-
+tokio = { version = "1.44", default-features = false, features = [
+    "rt",
+    "rt-multi-thread",
+    "sync",
+    "time",
+    "macros",
+] }
+protobuf = { version = "3.7.2", features = ["with-bytes"] }
+up-rust = { version = "0.5.0", default-features = false }
+up-transport-zenoh = { version = "0.6.0", features = ["zenoh-unstable"] }
+up-transport-vsomeip = { git = "https://github.com/eclipse-uprotocol/up-transport-vsomeip-rust", default-features = false }
+up-transport-mqtt5 = { git = "https://github.com/eclipse-uprotocol/up-transport-mqtt5-rust" }
+zenoh = { version = "1.2.1", features = [
+    "default",
+    "plugins",
+    "unstable",
+    "internal",
+] }
+zenoh-core = { version = "1.2.1" }
+zenoh-plugin-trait = { version = "1.2.1" }
+zenoh-result = { version = "1.2.1" }
+zenoh-util = { version = "1.2.1" }
 
 [profile.dev]
 debug = true
