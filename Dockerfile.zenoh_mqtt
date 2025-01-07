@@ -1,32 +1,21 @@
-# Use a lightweight base image
 FROM --platform=linux/amd64 debian:bullseye-slim
 
-# Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 ENV RUST_LOG=trace
 
-# Install necessary libraries for your binary
 RUN apt-get update && apt-get install -y \
     libc6 \
     libgcc-s1 \
     libstdc++6 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
 WORKDIR /app
 
-# Copy your compiled binary into the container
 COPY /target/x86_64-unknown-linux-gnu/release/zenoh_mqtt /app/zenoh_mqtt
 
-# Copy any additional configuration files if needed
-# COPY /config/ /app/config/
-
-# Ensure the binary is executable
 RUN chmod +x /app/zenoh_mqtt
 
-# Expose the required port
 EXPOSE 7447
 EXPOSE 1883
 
-# Command to run the binary
 CMD ["./zenoh_mqtt", "--config", "config/CONFIG.json5"]
