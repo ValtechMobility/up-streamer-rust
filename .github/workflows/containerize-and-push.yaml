@@ -63,11 +63,12 @@ jobs:
           cross build --target x86_64-unknown-linux-gnu --bin zenoh_mqtt --features="zenoh-transport mqtt-transport" --release
 
       - name: List files in target directory
-        run: ls -R target
+        run: ls target/x86_64-unknown-linux-gnu/release/zenoh_mqtt
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
+          context: .
           file: "Dockerfile.zenoh_mqtt"
           push: true
           platforms: linux/amd64
