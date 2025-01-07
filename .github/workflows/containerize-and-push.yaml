@@ -72,4 +72,4 @@ jobs:
           file: "Dockerfile.zenoh_mqtt"
           push: true
           platforms: linux/amd64
-          tags: user/app:latest
+          tags: benediktillich/streamertest:latest
