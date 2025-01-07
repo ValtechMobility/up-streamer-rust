@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY /target/x86_64-unknown-linux-gnu/release/zenoh_mqtt /app/zenoh_mqtt
+COPY target/x86_64-unknown-linux-gnu/release/zenoh_mqtt /app/zenoh_mqtt
 
 RUN chmod +x /app/zenoh_mqtt
 
