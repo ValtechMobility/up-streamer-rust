@@ -1,0 +1,10 @@
+services:
+  ustreamer:
+    image: ustreamer:latest
+    ports:
+      - 3883:1883
+      - 7447:7447
+    volumes:
+      - type: bind
+        source: ./config
+        target: /app/config
