@@ -1,0 +1,23 @@
+FROM  ghcr.io/cross-rs/x86_64-unknown-linux-musl:latest
+## Base rust 'cross' image for compiling on x86:64-unknown-linux-musl (gl-inet)
+ENV OPENSSL_V="1.1.1t"
+ENV OPENSSL_LIB_DIR=/tmp/openssl-${OPENSSL_V}
+ENV OPENSSL_INCLUDE_DIR=/tmp/openssl-${OPENSSL_V}/include
+
+RUN set -o errexit \
+    && apt-get update \
+    && apt install --yes wget clang g++-multilib \
+    && cd /tmp \
+    && wget https://www.openssl.org/source/openssl-${OPENSSL_V}.tar.gz \
+    && tar xzf openssl-${OPENSSL_V}.tar.gz \
+    && export MACHINE=x86_64 \
+    && export ARCH=x86_64-linux-muslsf \
+    && export CC=${ARCH}-gcc \
+    && cd /tmp/openssl-${OPENSSL_V} \
+    && ./config \
+    && make
+
+RUN export OPENSSL_V="1.1.1t" \
+    && export OPENSSL_LIB_DIR=/tmp/openssl-${OPENSSL_V} \
+    && export OPENSSL_DIR=/tmp/openssl-${OPENSSL_V} \
+    && export OPENSSL_INCLUDE_DIR=/tmp/openssl-${OPENSSL_V}/include

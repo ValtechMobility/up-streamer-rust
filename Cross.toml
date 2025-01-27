@@ -4,12 +4,15 @@ pre-build = [
     "apt-get update && apt-get install --assume-yes libssl-dev:$CROSS_DEB_ARCH",
 ]
 
-[target.aarch64-unknown-linux-gnu]
+[target.x86_64-unknown-linux-musl]
 pre-build = [
-    "dpkg --add-architecture $CROSS_DEB_ARCH",
-    "apt-get update && apt-get install pkg-config --assume-yes libssl-dev:$CROSS_DEB_ARCH",
-    "export GIT_DISCOVERY_ACROSS_FILESYSTEM=1",
+    "apt-get update && apt-get install --assume-yes libssl-dev",
     "export OPENSSL_ROOT_DIR=/usr",
-    "export OPENSSL_INCLUDE_DIR=/usr/include/aarch64-linux-gnu/openssl",
-    "export OPENSSL_LIBRARIES=/usr/lib/aarch64-linux-gnu",
 ]
+
+[target.aarch64-unknown-linux-gnu]
+# [build.env]
+# passthrough = ["CMAKE_TOOLCHAIN_FILE_aarch64_unknown_linux_gnu"]
+
+[build.env]
+passthrough = ["CMAKE_TOOLCHAIN_FILE_aarch64_unknown_linux_musl"]

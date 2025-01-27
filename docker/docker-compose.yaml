@@ -1,6 +1,6 @@
 services:
   ustreamer:
-    image: ustreamer:latest
+    image: benediktillich/streamertest:latest
     ports:
       - 3883:1883
       - 7447:7447

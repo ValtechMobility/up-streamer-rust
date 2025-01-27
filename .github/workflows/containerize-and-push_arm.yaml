@@ -15,13 +15,8 @@ name: Containerize UStreamer and Push to Container Registry
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    paths:
-      - ".github/**"
-      - "**/src/**"
-      - "**/Cargo.*"
-  workflow_call:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
@@ -46,9 +41,8 @@ jobs:
       - name: Login to the Container registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract metadata and create tag
         id: meta
@@ -74,14 +68,14 @@ jobs:
       - name: Cross Build for amd64
         working-directory: example-streamer-implementations
         run: |
-          cross build --target x86_64-unknown-linux-gnu --bin zenoh_mqtt --features="zenoh-transport mqtt-transport" --release
+          cross build --target aarch64-unknown-linux-musl --bin zenoh_mqtt --features="zenoh-transport mqtt-transport" --release
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: "Dockerfile.zenoh_mqtt"
+          file: "Dockerfile.zenoh_mqtt-arm-musl"
           push: true
-          platforms: linux/amd64
+          platforms: linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
