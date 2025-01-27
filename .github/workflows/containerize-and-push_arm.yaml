@@ -27,6 +27,7 @@ env:
 jobs:
   build-binary:
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: read
       packages: write
