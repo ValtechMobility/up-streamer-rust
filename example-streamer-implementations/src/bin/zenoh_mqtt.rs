@@ -118,11 +118,7 @@ async fn main() -> Result<(), UStatus> {
     );
 
     // In this implementation, the mqtt entity runs in the cloud and has its own authority.
-    let mqtt_endpoint = Endpoint::new(
-        "cloud_endpoint",
-        "horn-service-kuksa",
-        mqtt_transport.clone(),
-    );
+    let mqtt_endpoint = Endpoint::new("cloud_endpoint", "authority_A", mqtt_transport.clone());
 
     // Here we tell the streamer to forward any zenoh messages to the mqtt endpoint
     streamer
