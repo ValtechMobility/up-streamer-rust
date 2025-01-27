@@ -11,8 +11,13 @@
 #  SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************/
 
-[build.env]
-passthrough = [
-    "CMAKE_TOOLCHAIN_FILE_aarch64_unknown_linux_musl",
-    "CMAKE_TOOLCHAIN_FILE_x86_64_unknown_linux_musl",
-]
+FROM scratch
+
+WORKDIR /app
+
+COPY target/aarch64-unknown-linux-musl/release/zenoh_mqtt /app/zenoh_mqtt
+
+EXPOSE 7447
+EXPOSE 1883
+
+CMD ["./zenoh_mqtt", "--config", "config/CONFIG.json5"]
