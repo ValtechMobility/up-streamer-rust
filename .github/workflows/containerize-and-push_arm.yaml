@@ -43,8 +43,9 @@ jobs:
       - name: Login to the Container registry
         uses: docker/login-action@v3
         with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata and create tag
         id: meta
@@ -67,7 +68,7 @@ jobs:
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
 
-      - name: Cross Build for amd64
+      - name: Cross Build for arm64
         working-directory: example-streamer-implementations
         run: |
           cross build --target aarch64-unknown-linux-musl --bin zenoh_mqtt --features="zenoh-transport mqtt-transport" --release
