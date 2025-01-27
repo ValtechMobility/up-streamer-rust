@@ -1,0 +1,15 @@
+name: "Setup Rust and Cross"
+description: "Installs Rust and the Cross crate"
+runs:
+  using: "composite"
+  steps:
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+
+    - name: Install Cross
+      shell: bash
+      run: cargo install cross --git https://github.com/cross-rs/cross
