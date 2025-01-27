@@ -76,8 +76,8 @@ jobs:
           file: "Dockerfile.zenoh-mqtt-arm"
           push: true
           platforms: linux/arm64
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ needs.setup.outputs.tags }}
+          labels: ${{ needs.setup.outputs.labels }}
 
   build-amd64:
     needs: setup
@@ -111,5 +111,5 @@ jobs:
           file: "Dockerfile.zenoh-mqtt-amd"
           push: true
           platforms: linux/amd64
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ needs.setup.outputs.tags }}
+          labels: ${{ needs.setup.outputs.labels }}

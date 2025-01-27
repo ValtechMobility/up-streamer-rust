@@ -12,6 +12,8 @@
 # *******************************************************************************/
 
 [build.env]
+# This overrides the CMake toolchain file that Cross natively wants to use,
+# since it causes problems with the vendored OpenSSL version that Paho wants to use
 passthrough = [
     "CMAKE_TOOLCHAIN_FILE_aarch64_unknown_linux_musl",
     "CMAKE_TOOLCHAIN_FILE_x86_64_unknown_linux_musl",
