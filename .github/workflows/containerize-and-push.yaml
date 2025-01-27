@@ -47,6 +47,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      digest: ${{ steps.build_and_push.outputs.digest }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -70,18 +72,21 @@ jobs:
           cross build --target aarch64-unknown-linux-musl --bin zenoh_mqtt --features="zenoh-transport mqtt-transport" --release
 
       - name: Build and push Docker image for arm64
+        id: build_and_push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: "Dockerfile.zenoh-mqtt-arm"
           push: true
           platforms: linux/arm64
-          tags: ${{ needs.setup.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64-${{ github.sha }}
           labels: ${{ needs.setup.outputs.labels }}
 
   build-amd64:
     needs: setup
     runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.build_and_push.outputs.digest }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -105,11 +110,35 @@ jobs:
           cross build --target x86_64-unknown-linux-musl --bin zenoh_mqtt --features="zenoh-transport mqtt-transport" --release
 
       - name: Build and push Docker image for amd64
+        id: build_and_push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: "Dockerfile.zenoh-mqtt-amd"
           push: true
           platforms: linux/amd64
-          tags: ${{ needs.setup.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64-${{ github.sha }}
           labels: ${{ needs.setup.outputs.labels }}
+
+  create-manifest:
+    needs: [setup, build-arm64, build-amd64]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Login to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and push manifest
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ needs.setup.outputs.tags }}
+          platforms: linux/amd64,linux/arm64
+          inputs: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64-${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64-${{ github.sha }}
