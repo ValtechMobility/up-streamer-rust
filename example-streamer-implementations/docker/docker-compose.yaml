@@ -1,0 +1,35 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"
+    volumes:
+      # read-only prevents the container changing file owners on the host
+      - ./mosquitto.config:/mosquitto/config/mosquitto.conf:ro
+    networks:
+      - streamer-net
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -t 'test/#' -C 1 -E -W 3 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  ustreamer:
+    image: ghcr.io/valtechmobility/up-streamer-rust/zenoh-mqtt-streamer:pr-1
+    ports:
+      - "7447:7447" # Explicitly bind to all interfaces
+    networks:
+      - streamer-net
+    volumes:
+      - type: bind
+        source: ./config
+        target: /app/config
+    environment:
+      - RUST_LOG=debug,zenoh=debug
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+
+networks:
+  streamer-net:
+    driver: bridge

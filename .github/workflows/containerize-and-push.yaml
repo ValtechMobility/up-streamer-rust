@@ -79,7 +79,7 @@ jobs:
           file: "Dockerfile.zenoh-mqtt-arm"
           push: true
           platforms: linux/arm64
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64-${{ github.sha }}
+          tags: ${{ env.REGISTRY.lowercase }}/${{ env.IMAGE_NAME.lowercase }}:arm64-${{ github.sha }}
           labels: ${{ needs.setup.outputs.labels }}
 
   build-amd64:
@@ -117,7 +117,7 @@ jobs:
           file: "Dockerfile.zenoh-mqtt-amd"
           push: true
           platforms: linux/amd64
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64-${{ github.sha }}
+          tags: ${{ env.REGISTRY.lowercase }}/${{ env.IMAGE_NAME.lowercase }}:amd64-${{ github.sha }}
           labels: ${{ needs.setup.outputs.labels }}
 
   create-manifest:
@@ -140,5 +140,5 @@ jobs:
           tags: ${{ needs.setup.outputs.tags }}
           platforms: linux/amd64,linux/arm64
           inputs: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64-${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64-${{ github.sha }}
+            ${{ env.REGISTRY.lowercase }}/${{ env.IMAGE_NAME.lowercase }}:amd64-${{ github.sha }}
+            ${{ env.REGISTRY.lowercase }}/${{ env.IMAGE_NAME.lowercase }}:arm64-${{ github.sha }}
