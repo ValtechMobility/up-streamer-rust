@@ -26,3 +26,9 @@ runs:
     - name: Install Cross
       shell: bash
       run: cargo install cross --git https://github.com/cross-rs/cross
+
+    - name: Fix Registry and Repository names
+      shell: bash
+      run: |
+        echo "REGISTRY=$(echo $REGISTRY | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+        echo "IMAGE_NAME=$(echo $IMAGE_NAME | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
