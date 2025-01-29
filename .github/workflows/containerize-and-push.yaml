@@ -71,6 +71,12 @@ jobs:
         run: |
           cross build --target aarch64-unknown-linux-musl --bin zenoh_mqtt --features="zenoh-transport mqtt-transport" --release
 
+      - name: Fix Registry and Repository names
+        shell: bash
+        run: |
+          echo "REGISTRY=$(echo $REGISTRY | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          echo "IMAGE_NAME=$(echo $IMAGE_NAME | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build and push Docker image for arm64
         id: build_and_push
         uses: docker/build-push-action@v5
@@ -109,6 +115,12 @@ jobs:
         run: |
           cross build --target x86_64-unknown-linux-musl --bin zenoh_mqtt --features="zenoh-transport mqtt-transport" --release
 
+      - name: Fix Registry and Repository names
+        shell: bash
+        run: |
+          echo "REGISTRY=$(echo $REGISTRY | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          echo "IMAGE_NAME=$(echo $IMAGE_NAME | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build and push Docker image for amd64
         id: build_and_push
         uses: docker/build-push-action@v5
@@ -132,6 +144,12 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fix Registry and Repository names
+        shell: bash
+        run: |
+          echo "REGISTRY=$(echo $REGISTRY | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          echo "IMAGE_NAME=$(echo $IMAGE_NAME | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Create and push manifest
         uses: docker/build-push-action@v5
