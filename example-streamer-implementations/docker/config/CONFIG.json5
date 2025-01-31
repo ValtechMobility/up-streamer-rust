@@ -33,6 +33,8 @@
       transport: "Zenoh",
     },
     mqtt_config: {
+      // Determines the authority_name of the network where the mqtt entity runs
+      authority: "authority_A",
       // The URL of the MQTT broker (the provided mosquitto broker runs on locahost but docker networks might complicate that)
       hostname: "mosquitto",
       // The port of the broker (unencrypted MQTT like the provided mosquitto broker typically uses 1883, encrypted uses 8883)
@@ -47,8 +49,7 @@
       username: "user"
     },
     someip_config: {
-      // Determines the authority_name of the mechatronics network
-      // Used when initializing SOME/IP transport
+      // Determines the authority_name of the network where the SOME/IP entity runs
       authority: "authority_A",
       // The vsomeip configuration file to be used when initializing the vsomeip transport
       //
