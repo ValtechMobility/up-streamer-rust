@@ -152,11 +152,20 @@ jobs:
           echo "IMAGE_NAME=$(echo $IMAGE_NAME | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Create and push manifest
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          tags: ${{ needs.setup.outputs.tags }}
-          platforms: linux/amd64,linux/arm64
-          inputs: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64-${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64-${{ github.sha }}
+        shell: bash
+        run: |
+          # Create manifest list and add the images
+          for tag in ${{ needs.setup.outputs.tags }}; do
+            docker manifest create $tag \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64-${{ github.sha }} \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64-${{ github.sha }}
+
+            # Annotate the manifest with architecture information
+            docker manifest annotate $tag \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64-${{ github.sha }} --arch amd64
+            docker manifest annotate $tag \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64-${{ github.sha }} --arch arm64
+
+            # Push the manifest
+            docker manifest push $tag
+          done
