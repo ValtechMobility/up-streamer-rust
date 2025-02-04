@@ -17,6 +17,7 @@ on:
   push:
     branches:
       - main
+      - add_build_and_containerize_pipeline
   workflow_dispatch:
 
 env:
