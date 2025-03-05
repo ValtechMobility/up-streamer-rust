@@ -4197,8 +4197,9 @@ dependencies = [
 
 [[package]]
 name = "up-transport-vsomeip"
-version = "0.3.0"
-source = "git+https://github.com/PLeVasseur/up-client-vsomeip-rust?branch=add-build-script_update-up-rust-version#ed295aba9e979ff7cf59b3d085586677e43c75f5"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6ca3390c8a58096cdf00261fccde68a8d9258e3ee4d4db545fac34439a2089a0"
 dependencies = [
  "async-trait",
  "bimap",
@@ -4363,8 +4364,9 @@ checksum = "5c3082ca00d5a5ef149bb8b555a72ae84c9c59f7250f013ac822ac2e49b19c64"
 
 [[package]]
 name = "vsomeip-proc-macro"
-version = "0.1.0"
-source = "git+https://github.com/PLeVasseur/up-client-vsomeip-rust?branch=add-build-script_update-up-rust-version#ed295aba9e979ff7cf59b3d085586677e43c75f5"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dcec7f191a044b6798aa4b692ee741307480c25da6c6f1d76f8d92dbed56de62"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4374,8 +4376,9 @@ dependencies = [
 
 [[package]]
 name = "vsomeip-sys"
-version = "0.3.0"
-source = "git+https://github.com/PLeVasseur/up-client-vsomeip-rust?branch=add-build-script_update-up-rust-version#ed295aba9e979ff7cf59b3d085586677e43c75f5"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5acc70583100f7a10b59429b1b2d85555187f641f64a8ad5757850642eb19366"
 dependencies = [
  "autocxx",
  "autocxx-build",
