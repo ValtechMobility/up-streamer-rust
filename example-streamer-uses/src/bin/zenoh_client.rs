@@ -67,7 +67,7 @@ async fn main() -> Result<(), UStatus> {
     if !args.endpoint.is_empty() {
         // Specify the address to listen on using IPv4
         let ipv4_endpoint =
-            EndPoint::from_str("tcp/127.0.0.1:7447").expect("Unable to set endpoint");
+            EndPoint::from_str(args.endpoint.as_str()).expect("Unable to set endpoint");
 
         // Add the IPv4 endpoint to the Zenoh configuration
         zenoh_config
