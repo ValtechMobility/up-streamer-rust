@@ -30,7 +30,7 @@ services:
 
   ustreamer:
     # docker should automatically find the uStreamer container for the host architecture
-    image: ghcr.io/valtechmobility/up-streamer-rust/zenoh-mqtt-streamer:pr-1
+    image: ghcr.io/eclipse-uprotocol/up-streamer-rust/zenoh-mqtt-streamer:latest
     ports:
       - "7447:7447" # the port used by Zenoh must be open to the outside
     networks:
