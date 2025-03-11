@@ -22,7 +22,7 @@ use std::sync::Arc;
 use std::thread;
 use up_rust::{UCode, UStatus, UTransport, UUri, UUID};
 use up_streamer::{Endpoint, UStreamer};
-use up_transport_mqtt5::{MqttConfig, MqttProtocol, UPClientMqtt, UPClientMqttType};
+use up_transport_mqtt5::{Mqtt5Transport, MqttClientOptions, TransportMode};
 use up_transport_zenoh::UPTransportZenoh;
 use usubscription_static_file::USubscriptionStaticFile;
 use zenoh::config::Config as ZenohConfig;
@@ -95,33 +95,25 @@ async fn main() -> Result<(), UStatus> {
         zenoh_transport.clone(),
     );
 
-    let mqtt_config = MqttConfig {
-        mqtt_protocol: MqttProtocol::Mqtt,
-        mqtt_hostname: config.mqtt_config.hostname,
-        mqtt_port: config.mqtt_config.port,
-        max_buffered_messages: config.mqtt_config.max_buffered_messages,
-        max_subscriptions: config.mqtt_config.max_subscriptions,
-        session_expiry_interval: config.mqtt_config.session_expiry_interval,
-        ssl_options: None,
-        username: config.mqtt_config.username,
-    };
+    let mut mqtt_options = MqttClientOptions::default();
+    mqtt_options.broker_uri =
+        config.mqtt_config.hostname + ":" + &config.mqtt_config.port.to_string();
 
-    let mqtt_transport: Arc<dyn UTransport> = Arc::new(
-        UPClientMqtt::new(
-            mqtt_config,
-            UUID::build(),
-            "cloud".to_string(),
-            UPClientMqttType::Device,
-        )
-        .await
-        .expect("Could not create mqtt transport."),
-    );
+    let mqtt5_transport = Mqtt5Transport::new(
+        TransportMode::InVehicle,
+        mqtt_options,
+        config.mqtt_config.authority.clone(),
+    )
+    .await?;
+    mqtt5_transport.connect().await?;
+
+    let mqtt5_transport: Arc<dyn UTransport> = Arc::new(mqtt5_transport);
 
     // In this implementation, the mqtt entity runs in the cloud and has its own authority.
     let mqtt_endpoint = Endpoint::new(
         "cloud_endpoint",
         &config.mqtt_config.authority,
-        mqtt_transport.clone(),
+        mqtt5_transport.clone(),
     );
 
     // Here we tell the streamer to forward any zenoh messages to the mqtt endpoint

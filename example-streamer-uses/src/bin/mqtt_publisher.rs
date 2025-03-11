@@ -19,7 +19,7 @@ use log::info;
 use std::sync::Arc;
 use std::time::Duration;
 use up_rust::{UMessageBuilder, UStatus, UTransport, UUri, UUID};
-use up_transport_mqtt5::{MqttConfig, UPClientMqtt, UPClientMqttType};
+use up_transport_mqtt5::{Mqtt5Transport, MqttClientOptions, TransportMode};
 
 const PUB_TOPIC_AUTHORITY: &str = "authority_A";
 const PUB_TOPIC_UE_ID: u32 = 0x5BA0;
@@ -41,29 +41,18 @@ async fn main() -> Result<(), UStatus> {
     )
     .unwrap();
 
-    let ssl_options = None;
+    let mut mqtt_options = MqttClientOptions::default();
+    mqtt_options.broker_uri = "localhost:1883".to_string();
 
-    let mqtt_config = MqttConfig {
-        mqtt_protocol: up_transport_mqtt5::MqttProtocol::Mqtt,
-        mqtt_port: 1883,
-        mqtt_hostname: "localhost".to_string(),
-        max_buffered_messages: 100,
-        max_subscriptions: 100,
-        session_expiry_interval: 3600,
-        ssl_options,
-        username: "user".to_string(),
-    };
+    let mqtt5_transport = Mqtt5Transport::new(
+        TransportMode::InVehicle,
+        mqtt_options,
+        PUB_TOPIC_AUTHORITY.to_string(),
+    )
+    .await?;
+    mqtt5_transport.connect().await?;
 
-    let publisher: Arc<dyn UTransport> = Arc::new(
-        UPClientMqtt::new(
-            mqtt_config,
-            UUID::build(),
-            PUB_TOPIC_AUTHORITY.to_string(),
-            UPClientMqttType::Device,
-        )
-        .await
-        .expect("Could not create mqtt transport."),
-    );
+    let publisher: Arc<dyn UTransport> = Arc::new(mqtt5_transport);
 
     loop {
         tokio::time::sleep(Duration::from_millis(1000)).await;
