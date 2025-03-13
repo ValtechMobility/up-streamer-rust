@@ -1,0 +1,40 @@
+# Copyright (c) 2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+
+[package]
+name = "configurable-streamer"
+rust-version = "1.76.0"
+version = "0.1.0"
+repository = "https://github.com/eclipse-uprotocol/up-streamer-rust"
+homepage = "https://github.com/eclipse-uprotocol"
+edition = "2021"
+keywords = ["uProtocol", "SDV", "routing", "streamer"]
+license = "Apache-2.0"
+
+[dependencies]
+async-trait = { workspace = true }
+chrono = { version = "0.4" }
+clap = { workspace = true }
+env_logger = { workspace = true }
+log = { workspace = true }
+json5 = { workspace = true }
+protobuf = { workspace = true }
+serde = { workspace = true }
+tokio = { workspace = true }
+up-rust = { workspace = true }
+up-streamer = { path = "../up-streamer" }
+up-transport-zenoh = { workspace = true }
+up-transport-mqtt5 = { workspace = true }
+zenoh = { workspace = true }
+usubscription-static-file = { path = "../utils/usubscription-static-file" }
+
+[dev-dependencies]
+hello-world-protos = { path = "../utils/hello-world-protos" }

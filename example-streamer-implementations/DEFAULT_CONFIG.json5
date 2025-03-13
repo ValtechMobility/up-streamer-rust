@@ -33,7 +33,6 @@
       transport: "Zenoh",
     },
     mqtt_config: {
-      // Determines the authority_name of the mqtt component
       authority: "authority_A",
       // The URL of the MQTT broker (the provided mosquitto broker runs on locahost but docker networks might complicate that)
       hostname: "localhost",

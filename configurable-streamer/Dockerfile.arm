@@ -15,9 +15,9 @@ FROM scratch
 
 WORKDIR /app
 
-COPY target/aarch64-unknown-linux-musl/release/zenoh_mqtt /app/zenoh_mqtt
+COPY target/aarch64-unknown-linux-musl/release/configurable-streamer /app/configurable-streamer
 
 EXPOSE 7447
 EXPOSE 1883
 
-CMD ["./zenoh_mqtt", "--config", "config/CONFIG.json5"]
+CMD ["./configurable-streamer", "--config", "config/CONFIG.json5"]

@@ -18,16 +18,16 @@ use hello_world_protos::hello_world_service::HelloRequest;
 use log::info;
 use std::sync::Arc;
 use std::time::Duration;
-use up_rust::{UListener, UMessageBuilder, UStatus, UTransport, UUri, UUID};
+use up_rust::{UListener, UMessageBuilder, UStatus, UTransport, UUri};
 use up_transport_mqtt5::{Mqtt5Transport, MqttClientOptions, TransportMode};
 
 const SERVICE_AUTHORITY: &str = "authority_B";
-const SERVICE_UE_ID: u32 = 0x1236;
+const SERVICE_UE_ID: u32 = 1;
 const SERVICE_UE_VERSION_MAJOR: u8 = 1;
-const SERVICE_RESOURCE_ID: u16 = 0x0421;
+const SERVICE_RESOURCE_ID: u16 = 1;
 
 const CLIENT_AUTHORITY: &str = "authority_A";
-const CLIENT_UE_ID: u32 = 0x4321;
+const CLIENT_UE_ID: u32 = 1;
 const CLIENT_UE_VERSION_MAJOR: u8 = 1;
 const CLIENT_RESOURCE_ID: u16 = 0;
 
@@ -56,8 +56,10 @@ async fn main() -> Result<(), UStatus> {
     )
     .unwrap();
 
-    let mut mqtt_options = MqttClientOptions::default();
-    mqtt_options.broker_uri = "localhost:1883".to_string();
+    let mqtt_options = MqttClientOptions {
+        broker_uri: "localhost:1883".to_string(),
+        ..Default::default()
+    };
 
     let mqtt5_transport = Mqtt5Transport::new(
         TransportMode::InVehicle,

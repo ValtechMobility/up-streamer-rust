@@ -25,12 +25,12 @@ use up_transport_zenoh::UPTransportZenoh;
 use zenoh::config::{Config, EndPoint};
 
 const SERVICE_AUTHORITY: &str = "authority_A";
-const SERVICE_UE_ID: u32 = 0x4321;
+const SERVICE_UE_ID: u32 = 1;
 const SERVICE_UE_VERSION_MAJOR: u8 = 1;
-const SERVICE_RESOURCE_ID: u16 = 0x0421;
+const SERVICE_RESOURCE_ID: u16 = 1;
 
 const CLIENT_AUTHORITY: &str = "authority_B";
-const CLIENT_UE_ID: u32 = 0x1236;
+const CLIENT_UE_ID: u32 = 1;
 const CLIENT_UE_VERSION_MAJOR: u8 = 1;
 const CLIENT_RESOURCE_ID: u16 = 0;
 
@@ -71,7 +71,7 @@ async fn main() -> Result<(), UStatus> {
 
         // Add the IPv4 endpoint to the Zenoh configuration
         zenoh_config
-            .listen
+            .connect
             .endpoints
             .set(vec![ipv4_endpoint])
             .expect("Unable to set Zenoh Config");

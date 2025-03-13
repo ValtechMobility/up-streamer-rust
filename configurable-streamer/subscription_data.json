@@ -1,0 +1,5 @@
+{
+  "//authority_B/1/1/8001": ["//authority_A/1/1/0"],
+  "//authority_A/1/1/8001": ["//authority_B/1/1/0"],
+  "//authority_C/1/1/8001": ["//authority_B/1/1/0"]
+}

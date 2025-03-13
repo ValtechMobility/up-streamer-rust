@@ -1,0 +1,54 @@
+{
+    up_streamer_config: {
+      // The message queue size of each route between endpoints within the UStreamer
+      // Lower numbers mean that some messages will be dropped
+      message_queue_size: 10000
+    },
+    streamer_uuri: {
+      // Determines the authority_name of the host device
+      // Used when initializing host transport
+      authority: "authority_B",
+      // Determines the ue_id of the streamer
+      // Used when initializing host transport
+      ue_id: 78,
+      // Determines the ue_version_major of the streamer
+      // Used when initializing host transport
+      ue_version_major: 1
+    },
+    usubscription_config: {
+      // Lists the path to the subscription file when using static file
+      file_path: "subscription_data.json"
+    },
+    transports: {
+        zenoh: [
+            {
+                config_file: "ZENOH_CONFIG_1.json5",
+                authority: "authority_B",
+                endpoint: "endpoint_zenoh_1",
+                forwarding: [
+                    "endpoint_mqtt_1",
+                    "endpoint_zenoh_2"
+                ]
+            },
+            {
+                config_file: "ZENOH_CONFIG_2.json5",
+                authority: "authority_C",
+                endpoint: "endpoint_zenoh_2",
+                forwarding: [
+                    "endpoint_zenoh_1",
+                ]
+            }
+        ],
+        mqtt: [
+            {
+                config_file: "MQTT_CONFIG.json5",
+                authority: "authority_A",
+                endpoint: "endpoint_mqtt_1",
+                forwarding: [
+                    "endpoint_zenoh_1",
+
+                ]
+            }
+        ]
+    }
+}

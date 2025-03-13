@@ -50,7 +50,7 @@ up-transport-zenoh = { workspace = true, optional = true }
 up-transport-vsomeip = { workspace = true, optional = true }
 up-transport-mqtt5 = { workspace = true, optional = true }
 zenoh = { workspace = true, optional = true }
-usubscription-static-file = {path = "../utils/usubscription-static-file"}
+usubscription-static-file = { path = "../utils/usubscription-static-file" }
 
 [dev-dependencies]
 hello-world-protos = { path = "../utils/hello-world-protos" }

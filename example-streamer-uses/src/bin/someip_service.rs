@@ -23,9 +23,9 @@ use up_rust::{UListener, UStatus, UTransport, UUri};
 use up_transport_vsomeip::UPTransportVsomeip;
 
 const SERVICE_AUTHORITY: &str = "authority_A";
-const SERVICE_UE_ID: u32 = 0x4321;
+const SERVICE_UE_ID: u32 = 1;
 const SERVICE_UE_VERSION_MAJOR: u8 = 1;
-const SERVICE_RESOURCE_ID: u16 = 0x0421;
+const SERVICE_RESOURCE_ID: u16 = 1;
 
 const REMOTE_AUTHORITY: &str = "authority_B";
 

@@ -16,6 +16,7 @@ members = [
     "utils/hello-world-protos",
     "utils/integration-test-utils",
     "example-streamer-implementations",
+    "configurable-streamer",
     "up-linux-streamer-plugin",
     "up-streamer",
     "subscription-cache",
@@ -23,7 +24,7 @@ members = [
 ]
 
 [workspace.package]
-rust-version = "1.76.0"
+rust-version = "1.82.0"
 version = "0.1.0"
 repository = "https://github.com/eclipse-uprotocol/up-streamer-rust"
 homepage = "https://github.com/eclipse-uprotocol"
@@ -43,29 +44,30 @@ json5 = { version = "0.4.1" }
 serde = { version = "1.0.154", features = ["derive"] }
 serde_json = { version = "1.0.94" }
 uuid = { version = "1.7.0" }
-tokio = { version = "1.35.1", default-features = false, features = [
+tokio = { version = "1.44", default-features = false, features = [
     "rt",
     "rt-multi-thread",
     "sync",
     "time",
     "macros",
 ] }
-protobuf = { version = "3.3", features = ["with-bytes"] }
-up-rust = { version = "0.4.0", default-features = false }
-up-transport-zenoh = { version = "0.5.0", features = ["zenoh-unstable"] }
-up-transport-vsomeip = { version = "0.4.1", default-features = false }
-up-transport-mqtt5 = { git = "https://github.com/eclipse-uprotocol/up-client-mqtt5-rust", branch = "main" }
-zenoh = { version = "1.0.0", features = [
+protobuf = { version = "3.7.2", features = ["with-bytes"] }
+up-rust = { version = "0.5.0", default-features = false }
+up-transport-zenoh = { git = "https://github.com/ValMobBIllich/up-transport-zenoh-rust.git", branch = "bump-dependencies", features = [
+    "zenoh-unstable",
+] }
+up-transport-vsomeip = { git = "https://github.com/ValtechMobility/up-transport-vsomeip-rust.git", branch = "bump-dependencies", default-features = false }
+up-transport-mqtt5 = { git = "https://github.com/SoftwareDefinedVehicle/up-transport-mqtt5-rust.git", branch = "update_to_up-rust-0.5.0" }
+zenoh = { version = "1.2.1", features = [
     "default",
     "plugins",
     "unstable",
     "internal",
 ] }
-zenoh-core = { version = "1.0.0" }
-zenoh-plugin-trait = { version = "1.0.0" }
-zenoh-result = { version = "1.0.0" }
-zenoh-util = { version = "1.0.0" }
-zenoh_backend_traits = { version = "1.0.0" }
+zenoh-core = { version = "1.2.1" }
+zenoh-plugin-trait = { version = "1.2.1" }
+zenoh-result = { version = "1.2.1" }
+zenoh-util = { version = "1.2.1" }
 
 [profile.dev]
 debug = true

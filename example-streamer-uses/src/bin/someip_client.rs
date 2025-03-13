@@ -24,12 +24,12 @@ use up_rust::{UListener, UMessageBuilder, UStatus, UTransport, UUri};
 use up_transport_vsomeip::UPTransportVsomeip;
 
 const SERVICE_AUTHORITY: &str = "authority_B";
-const SERVICE_UE_ID: u32 = 0x1236;
+const SERVICE_UE_ID: u32 = 1;
 const SERVICE_UE_VERSION_MAJOR: u8 = 1;
-const SERVICE_RESOURCE_ID: u16 = 0x0421;
+const SERVICE_RESOURCE_ID: u16 = 1;
 
 const CLIENT_AUTHORITY: &str = "authority_A";
-const CLIENT_UE_ID: u32 = 0x5678;
+const CLIENT_UE_ID: u32 = 1;
 const CLIENT_UE_VERSION_MAJOR: u8 = 1;
 const CLIENT_RESOURCE_ID: u16 = 0;
 

@@ -22,7 +22,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/zenoh-mqtt-streamer
+  IMAGE_NAME: ${{ github.repository }}/configurable-streamer
 
 jobs:
   setup:
@@ -67,9 +67,9 @@ jobs:
         uses: ./.github/actions/setup-rust-cross
 
       - name: Cross Build for arm64
-        working-directory: example-streamer-implementations
+        working-directory: configurable-streamer
         run: |
-          cross build --target aarch64-unknown-linux-musl --bin zenoh_mqtt --features="zenoh-transport mqtt-transport" --release
+          cross build --target aarch64-unknown-linux-musl --release
 
       - name: Fix Registry and Repository names
         shell: bash
@@ -82,7 +82,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: "Dockerfile.zenoh-mqtt-arm"
+          file: "Dockerfile.arm"
           push: true
           platforms: linux/arm64
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64-${{ github.sha }}
@@ -111,9 +111,9 @@ jobs:
         uses: ./.github/actions/setup-rust-cross
 
       - name: Cross Build for amd64
-        working-directory: example-streamer-implementations
+        working-directory: configurable-streamer
         run: |
-          cross build --target x86_64-unknown-linux-musl --bin zenoh_mqtt --features="zenoh-transport mqtt-transport" --release
+          cross build --target x86_64-unknown-linux-musl --release
 
       - name: Fix Registry and Repository names
         shell: bash
@@ -126,7 +126,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: "Dockerfile.zenoh-mqtt-amd"
+          file: "Dockerfile.amd"
           push: true
           platforms: linux/amd64
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64-${{ github.sha }}

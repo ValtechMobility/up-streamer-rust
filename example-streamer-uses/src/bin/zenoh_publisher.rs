@@ -24,7 +24,7 @@ use up_transport_zenoh::UPTransportZenoh;
 use zenoh::config::{Config, EndPoint};
 
 const PUB_TOPIC_AUTHORITY: &str = "authority_B";
-const PUB_TOPIC_UE_ID: u32 = 0x3039;
+const PUB_TOPIC_UE_ID: u32 = 1;
 const PUB_TOPIC_UE_VERSION_MAJOR: u8 = 1;
 const PUB_TOPIC_RESOURCE_ID: u16 = 0x8001;
 
@@ -42,7 +42,7 @@ fn publisher_uuri() -> UUri {
 #[command(version, about, long_about = None)]
 struct Args {
     /// The endpoint for Zenoh client to connect to
-    #[arg(short, long, default_value = "tcp/0.0.0.0:7444")]
+    #[arg(short, long, default_value = "tcp/localhost:7447")]
     endpoint: String,
 }
 
@@ -63,7 +63,7 @@ async fn main() -> Result<(), UStatus> {
 
         // Add the IPv4 endpoint to the Zenoh configuration
         zenoh_config
-            .listen
+            .connect
             .endpoints
             .set(vec![ipv4_endpoint])
             .expect("Unable to set Zenoh Config");

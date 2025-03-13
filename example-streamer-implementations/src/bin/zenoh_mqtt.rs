@@ -20,7 +20,7 @@ use std::fs::File;
 use std::io::Read;
 use std::sync::Arc;
 use std::thread;
-use up_rust::{UCode, UStatus, UTransport, UUri, UUID};
+use up_rust::{UCode, UStatus, UTransport, UUri};
 use up_streamer::{Endpoint, UStreamer};
 use up_transport_mqtt5::{Mqtt5Transport, MqttClientOptions, TransportMode};
 use up_transport_zenoh::UPTransportZenoh;
@@ -95,9 +95,10 @@ async fn main() -> Result<(), UStatus> {
         zenoh_transport.clone(),
     );
 
-    let mut mqtt_options = MqttClientOptions::default();
-    mqtt_options.broker_uri =
-        config.mqtt_config.hostname + ":" + &config.mqtt_config.port.to_string();
+    let mqtt_options = MqttClientOptions {
+        broker_uri: config.mqtt_config.hostname + ":" + &config.mqtt_config.port.to_string(),
+        ..Default::default()
+    };
 
     let mqtt5_transport = Mqtt5Transport::new(
         TransportMode::InVehicle,

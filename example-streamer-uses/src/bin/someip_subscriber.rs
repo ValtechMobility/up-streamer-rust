@@ -23,13 +23,13 @@ use up_rust::{UListener, UStatus, UTransport, UUri};
 use up_transport_vsomeip::UPTransportVsomeip;
 
 const SUB_TOPIC_AUTHORITY: &str = "authority_B";
-const SUB_TOPIC_UE_ID: u32 = 0x5BB0;
+const SUB_TOPIC_UE_ID: u32 = 1;
 const SUB_TOPIC_UE_VERSION_MAJOR: u8 = 1;
 
 const PUB_TOPIC_AUTHORITY: &str = "authority_B";
-const PUB_TOPIC_UE_ID: u32 = 0x3039;
+const PUB_TOPIC_UE_ID: u32 = 1;
 const PUB_TOPIC_UE_VERSION_MAJOR: u8 = 1;
-const PUB_TOPIC_RESOURCE_ID: u16 = 0x8001;
+const PUB_TOPIC_RESOURCE_ID: u16 = 32769;
 
 fn subscriber_uuri() -> UUri {
     UUri::try_from_parts(

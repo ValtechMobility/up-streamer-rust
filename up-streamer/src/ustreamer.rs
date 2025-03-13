@@ -190,6 +190,7 @@ impl ForwardingListeners {
     pub async fn insert(
         &self,
         in_transport: Arc<dyn UTransport>,
+        in_authority: &str,
         out_authority: &str,
         forwarding_id: &str,
         out_sender: Sender<Arc<UMessage>>,
@@ -219,9 +220,11 @@ impl ForwardingListeners {
         // Perform async registration and fetching
 
         uuris_to_backpedal.insert((UUri::any(), Some(uauthority_to_uuri(out_authority))));
+
         if let Err(err) = in_transport
             .register_listener(
-                &UUri::any(),
+                &uauthority_to_uuri(in_authority),
+                //&UUri::any(),
                 Some(&uauthority_to_uuri(out_authority)),
                 forwarding_listener.clone(),
             )
@@ -271,9 +274,20 @@ impl ForwardingListeners {
         };
 
         for subscriber in subscribers {
+            let source_uri = UUri::try_from_parts(
+                in_authority,
+                subscriber.topic.ue_id,
+                subscriber.topic.uentity_major_version(),
+                subscriber.topic.resource_id(),
+            )
+            .unwrap();
+            info!(
+                "in authority: {}, out authority: {}, source URI filter: {:?}",
+                in_authority, out_authority, source_uri
+            );
             uuris_to_backpedal.insert((subscriber.topic.clone(), None));
             if let Err(err) = in_transport
-                .register_listener(&subscriber.topic, None, forwarding_listener.clone())
+                .register_listener(&source_uri, None, forwarding_listener.clone())
                 .await
             {
                 warn!(
@@ -722,6 +736,7 @@ impl UStreamer {
                         .forwarding_listeners
                         .insert(
                             r#in.transport.clone(),
+                            &r#in.authority,
                             &out.authority,
                             &Self::forwarding_id(&r#in, &out),
                             out_sender,
