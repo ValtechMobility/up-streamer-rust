@@ -38,3 +38,5 @@ usubscription-static-file = { path = "../utils/usubscription-static-file" }
 
 [dev-dependencies]
 hello-world-protos = { path = "../utils/hello-world-protos" }
+tempdir = "0.3.7"
+serde_json = { workspace = true }
